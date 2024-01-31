@@ -1,0 +1,30 @@
+html {
+    box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+body {
+    height: 100svh;
+    margin: 0;
+    overflow: hidden;
+    font-family: Roboto, sans-serif;
+ }
+
+button {
+    height: 25px;
+    width: 40px;
+ }
+.calculator {
+    width: 300px;
+    margin: 0 auto;
+}
+.display{
+    height: 25px;
+    width: 160px;
+    border: 1px solid grey;
+}
