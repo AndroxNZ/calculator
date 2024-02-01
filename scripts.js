@@ -1,72 +1,97 @@
-let addition = function(a, b) {
+let addition = function (a, b) {
     return a + b;
 };
-let subtraction = function(a, b) {
+let subtraction = function (a, b) {
     return a - b;
 };
-let multiplication = function(a, b) {
+let multiplication = function (a, b) {
     return a * b;
 };
-let division = function(a, b) {
+let division = function (a, b) {
     return a / b;
 };
 
 const buttons = document.querySelectorAll('button');
 const input = document.querySelector('input[class="display"]');
+input.value = '';
 let currentSelection = '';
-const operation = [];
+let allNumbers = [];
 let digits = '';
 let product = 0;
+let allOperators = [];
+let currentNum = 0;
+let alreadyOperator = false;
 
 buttons.forEach((button) => {
     button.addEventListener('click', () => {
         let currentSelection = button.textContent;
-        // console.log(typeof currentSelection);
-        // console.log(typeof parseInt(currentSelection));
+        if (currentSelection === 'CLR') {
+            input.value = '';
+            currentSelection = '';
+            allNumbers = [];
+            digits = '';
+            allOperators = [];
+            input.value = '0';
+        }
         if (!isNaN(currentSelection)) {
             digits += currentSelection;
             input.value = digits;
+            alreadyOperator = false;
         }
         if (isNaN(currentSelection)) {
             if (currentSelection === '=') {
-                operation.push(digits);
-                operate(operation);
+                allNumbers.push(digits);
+                digits = '';
+                operate(allNumbers);
             } else {
-                let operator = currentSelection;
-                operation.push(digits, currentSelection);
+                input.value = currentSelection;
+                // if (alreadyOperator) {
+                //     allOperators.pop();
+                // }
+                allNumbers.push(digits);
+                allOperators.push(currentSelection);
                 // Reset digits back to empty
                 digits = '';
+                alreadyOperator = true;
+
             }
         }
-        input.value = operation;
     });
 });
 
-function operate(operation) {
+function operate(allNumbers) {
+    let product = parseInt(allNumbers.shift());
 
-    console.log(operation);
-        let num = parseInt(operation.shift());
-        console.log(num);
-        let operator = operation.shift();
-        console.log(operator);
-        if (product === 0) {
-            product = num;
-            num = parseInt(operation.shift());
+    while (allNumbers.length > 0) {
+        switch (allOperators[0]) {
+            case '+':
+                allOperators.shift();
+                currentNum = parseInt(allNumbers.shift());
+                product = addition(product, currentNum);
+                break;
+            case '-':
+                allOperators.shift();
+                currentNum = parseInt(allNumbers.shift());
+                product = subtraction(product, currentNum);
+                break;
+            case '*':
+                allOperators.shift();
+                currentNum = parseInt(allNumbers.shift());
+                product = multiplication(product, currentNum);
+                break;
+            case '/':
+                allOperators.shift();
+                currentNum = parseInt(allNumbers.shift());
+                product = division(product, currentNum);
+                break;
         }
-        switch (operator) {
-            case '+': product = addition(product, num);
-        }
-    console.log(`Calculation = ${product}`);
-    operation = [];
-    // if  (operator == "=") {
-    //     calculate(operation);
-    // }
+    }
+    console.log(`digits is currently : ${digits}`)
+    console.log(`allNumbers is currently : ${allNumbers}`)
+    console.log(`allOperators is currently : ${allOperators}`)
+    console.log(`product is currently : ${product}`)
+    input.value = product;
+    digits = product;
+    product = 0;
+    alreadyOperator = false;
 }
-// function calculate(operation) {
-//     let sum = 0;
-//     for (value in operation) {
-//         let currentValue = value;
-//         if (currentValue ===
-//     }
-// }
-
