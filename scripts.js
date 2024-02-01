@@ -13,37 +13,51 @@ let division = function(a, b) {
 
 const buttons = document.querySelectorAll('button');
 const input = document.querySelector('input[class="display"]');
-let selection = [];
+let currentSelection = '';
+const operation = [];
+let digits = '';
+let product = 0;
 
 buttons.forEach((button) => {
     button.addEventListener('click', () => {
-        let currentSelection = isNaN(parseInt(button.textContent)) ? button.textContent : parseInt(button.textContent);
-        if (typeof currentSelection === 'number') {
-            selection.push(currentSelection);
+        let currentSelection = button.textContent;
+        // console.log(typeof currentSelection);
+        // console.log(typeof parseInt(currentSelection));
+        if (!isNaN(currentSelection)) {
+            digits += currentSelection;
+            input.value = digits;
         }
-        if (typeof currentSelection !== 'number') {
+        if (isNaN(currentSelection)) {
+            if (currentSelection === '=') {
+                operation.push(digits);
+                operate(operation);
+            } else {
                 let operator = currentSelection;
-                operate(selection, operator);
+                operation.push(digits, currentSelection);
+                // Reset digits back to empty
+                digits = '';
+            }
         }
+        input.value = operation;
     });
 });
-function clearSelection() {
-    for (selection.length in selection) {
-        selection.pop();
-        }
-}
-let operation = [];
-function operate(selection, operator) {
 
-    stringArr = selection.map((digit) => {
-        return String(digit);
-    });
-    digits = parseInt(stringArr.reduce((sum, num) => {
-        return sum + num;
-    }));
-    operation.push(digits, operator);
+function operate(operation) {
+
     console.log(operation);
-    clearSelection();
+        let num = parseInt(operation.shift());
+        console.log(num);
+        let operator = operation.shift();
+        console.log(operator);
+        if (product === 0) {
+            product = num;
+            num = parseInt(operation.shift());
+        }
+        switch (operator) {
+            case '+': product = addition(product, num);
+        }
+    console.log(`Calculation = ${product}`);
+    operation = [];
     // if  (operator == "=") {
     //     calculate(operation);
     // }
