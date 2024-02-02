@@ -11,87 +11,75 @@ let division = function (a, b) {
     return a / b;
 };
 
-const buttons = document.querySelectorAll('button');
-const input = document.querySelector('input[class="display"]');
+const operators = document.querySelectorAll('.operator');
+const numbers = document.querySelectorAll('.number');
+const equals = document.querySelector('.equals');
+const clear = document.querySelector('.clear');
+const backSpace = document.querySelector('.delete');
+const input = document.querySelector('.display');
 input.value = '';
-let currentSelection = '';
-let allNumbers = [];
-let digits = '';
-let product = 0;
-let allOperators = [];
-let currentNum = 0;
-let alreadyOperator = false;
+let num1 = '';
+let num2 = '';
+let operatorSelected = '';
+let product = '';
 
-buttons.forEach((button) => {
-    button.addEventListener('click', () => {
-        let currentSelection = button.textContent;
-        if (currentSelection === 'CLR') {
-            input.value = '';
-            currentSelection = '';
-            allNumbers = [];
-            digits = '';
-            allOperators = [];
-            input.value = '0';
-        }
-        if (!isNaN(currentSelection)) {
-            digits += currentSelection;
-            input.value = digits;
-            alreadyOperator = false;
-        }
-        if (isNaN(currentSelection)) {
-            if (currentSelection === '=') {
-                allNumbers.push(digits);
-                digits = '';
-                operate(allNumbers);
-            } else {
-                input.value = currentSelection;
-                // if (alreadyOperator) {
-                //     allOperators.pop();
-                // }
-                allNumbers.push(digits);
-                allOperators.push(currentSelection);
-                // Reset digits back to empty
-                digits = '';
-                alreadyOperator = true;
-
-            }
+numbers.forEach((number) => {
+    number.addEventListener('click', () => {
+        if (operatorSelected) {
+            num2 += number.textContent;
+            input.value = num2;
+        } else {
+            num1 += number.textContent;
+            input.value = num1;
         }
     });
 });
 
-function operate(allNumbers) {
-    let product = parseInt(allNumbers.shift());
-
-    while (allNumbers.length > 0) {
-        switch (allOperators[0]) {
-            case '+':
-                allOperators.shift();
-                currentNum = parseInt(allNumbers.shift());
-                product = addition(product, currentNum);
-                break;
-            case '-':
-                allOperators.shift();
-                currentNum = parseInt(allNumbers.shift());
-                product = subtraction(product, currentNum);
-                break;
-            case '*':
-                allOperators.shift();
-                currentNum = parseInt(allNumbers.shift());
-                product = multiplication(product, currentNum);
-                break;
-            case '/':
-                allOperators.shift();
-                currentNum = parseInt(allNumbers.shift());
-                product = division(product, currentNum);
-                break;
-        }
+operators.forEach((operator) => {
+    operator.addEventListener('click', () => {
+        operatorSelected = operator.textContent;
+        input.value = operatorSelected;
+    });
+});
+backSpace.addEventListener('click', () => {
+    if (operatorSelected) {
+        num2 = num2.slice(0, -1);
+        input.value = num2;
+    } else {
+        num1 = num1.slice(0, -1);
+        input.value = num1;
     }
-    console.log(`digits is currently : ${digits}`)
-    console.log(`allNumbers is currently : ${allNumbers}`)
-    console.log(`allOperators is currently : ${allOperators}`)
-    console.log(`product is currently : ${product}`)
-    input.value = product;
-    digits = product;
-    product = 0;
-    alreadyOperator = false;
+});
+
+clear.addEventListener('click', () => {
+    num1 = '';
+    num2 = '';
+    operatorSelected = '';
+    input.value = '';
+});
+
+equals.addEventListener('click', () => {
+    operate();
+});
+function operate() {
+    let int1 = parseInt(num1);
+    let int2 = parseInt(num2);
+    switch (operatorSelected) {
+        case '+':
+            product = addition(int1, int2);
+            break;
+        case '-':
+            product = subtraction(int1, int2);
+            break;
+        case '*':
+            product = multiplication(int1, int2);
+            break;
+        case '/':
+            product = division(int1, int2);
+            break;
+    }
+    num1 = product;
+    input.value = num1;
+    operatorSelected = '';
+    num2 = '';
 }
